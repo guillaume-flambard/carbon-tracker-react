@@ -7,6 +7,7 @@ import {
   DownloadIcon,
   LeafIcon,
   LeafyIcon,
+  RefreshIcon,
   ZapIcon,
 } from "./components/index";
 
@@ -34,6 +35,13 @@ const Popup: React.FC = () => {
       chrome.storage.onChanged.removeListener(fetchData);
     };
   }, []);
+
+  const handleReset = () => {
+    chrome.storage.local.clear();
+    setDataReceived(0);
+    setEnergyConsumed(0);
+    setCo2Emissions(0);
+  };
 
   return (
     <div className="px-4 py-6 bg-slate-200 rounded-3xl">
@@ -67,6 +75,12 @@ const Popup: React.FC = () => {
           unit="kg CO2"
         />
       </div>
+      <button
+        className="bg-green-800 hover:bg-green-700 transition-colors flex items-center justify-center rounded-lg text-white p-2 gap-x-1"
+        onClick={handleReset}
+      >
+        <span>reset</span> <RefreshIcon className="w-[16px] h-[16px]" />
+      </button>
       <AccordionPopup />
     </div>
   );

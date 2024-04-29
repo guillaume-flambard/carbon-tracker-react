@@ -2,7 +2,7 @@ import { RefreshCcw } from "lucide-react";
 
 interface RefreshIconProps {
   color?: string;
-  size?: number;
+  size?: string;
   className?: string;
 }
 
