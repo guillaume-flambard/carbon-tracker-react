@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "carbon tracker react",
+  "version": "1.0.0",
+  "action": { "default_popup": "index.html" },
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "webNavigation",
+    "webRequest"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "icons": {
+    "16": "logo.png",
+    "32": "logo.png",
+    "48": "logo.png",
+    "128": "logo.png"
+  },
+  "background": {
+    "service_worker": "./src/background/background.ts"
+  }
+}
