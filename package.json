@@ -10,16 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@types/chrome": "^0.0.267",
-    "chrome": "^0.1.0",
+    "@radix-ui/react-accordion": "^1.1.2",
+    "class-variance-authority": "^0.7.0",
     "lucide-react": "^0.376.0",
-    "path": "^0.12.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "tailwindcss-animate": "^1.0.7",
     "vite-tsconfig-paths": "^4.3.2"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "2.0.0-beta.23",
+    "@types/chrome": "^0.0.267",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",

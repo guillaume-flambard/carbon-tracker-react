@@ -1,9 +1,11 @@
 // Popup.tsx
 import React, { useEffect, useState } from "react";
-import { formatBytesToMB } from "../../utils";
+import { formatBytesToMB } from "../lib/utils";
 import {
+  AccordionPopup,
   CounterCircle,
   DownloadIcon,
+  LeafIcon,
   LeafyIcon,
   ZapIcon,
 } from "./components/index";
@@ -35,9 +37,15 @@ const Popup: React.FC = () => {
 
   return (
     <div className="px-4 py-6 bg-slate-200 rounded-3xl">
-      <h1 className="text-center text-3xl font-bold text-green-800">
-        Carbon Tracker
-      </h1>
+      <div className="flex items-center justify-center gap-x-1">
+        <h1 className="text-center text-3xl font-bold text-green-800">
+          Carbon Tracker
+        </h1>
+        <LeafIcon className="text-green-800" />
+      </div>
+      <p className="text-center text-xxs text-gray-600 dark:text-gray-300">
+        Keep track of your carbon footprint
+      </p>
       <hr className="w-48 h-1 mx-auto my-6 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-700" />{" "}
       <div className="my-8 flex justify-center items-center gap-4">
         <CounterCircle
@@ -59,6 +67,7 @@ const Popup: React.FC = () => {
           unit="kg CO2"
         />
       </div>
+      <AccordionPopup />
     </div>
   );
 };

@@ -2,7 +2,7 @@ import Popup from "./popup/Popup";
 
 const App = () => {
   return (
-    <div className="container min-w-[400px] mx-auto">
+    <div className="min-w-[400px] m-1">
       <Popup />
     </div>
   );
