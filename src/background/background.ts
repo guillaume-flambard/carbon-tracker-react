@@ -42,6 +42,10 @@ chrome.webRequest.onHeadersReceived.addListener(
             totalEnergyConsumed: newTotalEnergyConsumed,
             totalCo2Emissions: newTotalCo2Emissions,
           });
+
+          console.log(
+            `Data received: ${newTotalDataReceived} bytes, Energy consumed: ${newTotalEnergyConsumed} kWh, CO2 emissions: ${newTotalCo2Emissions} kg`
+          );
         }
       );
     }

@@ -1,6 +1,7 @@
 // Popup.tsx
+import { HelpCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { formatBytesToMB } from "../lib/utils";
+import { formatBytesToReadable, formatCO2, formatEnergy } from "../lib/utils";
 import {
   AccordionPopup,
   CounterCircle,
@@ -15,6 +16,11 @@ const Popup: React.FC = () => {
   const [dataReceived, setDataReceived] = useState<number>(0);
   const [energyConsumed, setEnergyConsumed] = useState<number>(0);
   const [co2Emissions, setCo2Emissions] = useState<number>(0);
+  const [show, setShow] = useState<boolean>(false);
+
+  const toggleShow = () => {
+    setShow(!show);
+  };
 
   useEffect(() => {
     const fetchData = () => {
@@ -31,9 +37,7 @@ const Popup: React.FC = () => {
     fetchData();
     chrome.storage.onChanged.addListener(fetchData);
 
-    return () => {
-      chrome.storage.onChanged.removeListener(fetchData);
-    };
+    return () => chrome.storage.onChanged.removeListener(fetchData);
   }, []);
 
   const handleReset = () => {
@@ -58,30 +62,33 @@ const Popup: React.FC = () => {
       <div className="my-8 flex justify-center items-center gap-4">
         <CounterCircle
           id="dataReceived"
-          value={formatBytesToMB(dataReceived)}
+          value={formatBytesToReadable(dataReceived)}
           icon={<DownloadIcon />}
-          unit="MB"
         />
         <CounterCircle
           id="energyConsumed"
-          value={energyConsumed.toFixed(2)}
+          value={formatEnergy(energyConsumed)}
           icon={<ZapIcon />}
-          unit="kWh"
         />
         <CounterCircle
           id="co2Emissions"
-          value={co2Emissions.toFixed(2)}
+          value={formatCO2(co2Emissions)}
           icon={<LeafyIcon />}
-          unit="kg CO2"
         />
       </div>
-      <button
-        className="bg-green-800 hover:bg-green-700 transition-colors flex items-center justify-center rounded-lg text-white p-2 gap-x-1"
-        onClick={handleReset}
-      >
-        <span>reset</span> <RefreshIcon className="w-[16px] h-[16px]" />
-      </button>
-      <AccordionPopup />
+      <div className="flex items-center justify-between">
+        <button
+          className="bg-green-800 hover:bg-green-700 transition-colors flex items-center justify-center rounded-lg text-white p-2 gap-x-1"
+          onClick={handleReset}
+        >
+          <span>Reset</span> <RefreshIcon className="w-[16px] h-[16px]" />
+        </button>
+        <HelpCircle
+          className="w-[16px] h-[16px] cursor-pointer hover:scale-110 transition-all duration-300 ease-in-out"
+          onClick={toggleShow}
+        />
+      </div>
+      {show && <AccordionPopup />}
     </div>
   );
 };
