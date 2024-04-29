@@ -1,3 +1,4 @@
+import AccordionPopup from "./Accordion-popup";
 import CounterCircle from "./Counter-circle";
 import DownloadIcon from "./icons/Download";
 import LeafIcon from "./icons/Leaf";
@@ -7,6 +8,7 @@ import UploadIcon from "./icons/Upload";
 import ZapIcon from "./icons/Zap";
 
 export {
+  AccordionPopup,
   CounterCircle,
   DownloadIcon,
   LeafIcon,
