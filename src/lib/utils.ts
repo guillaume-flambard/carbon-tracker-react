@@ -3,29 +3,42 @@ import { twMerge } from "tailwind-merge";
 
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 
-// utils.js
-// utils.js
 export function formatBytes(bytes = 0) {
+  let unit = "Bytes";
+  let value = bytes;
+
   if (bytes >= 1e9) {
-    return (bytes / 1e9).toFixed(2); // Returns the value in GB
+    value = bytes / 1e9;
+    unit = "GB";
   } else if (bytes >= 1e6) {
-    return (bytes / 1e6).toFixed(2); // Returns the value in MB
+    value = bytes / 1e6;
+    unit = "MB";
   } else if (bytes >= 1000) {
-    return (bytes / 1000).toFixed(2); // Returns the value in KB
+    value = bytes / 1000;
+    unit = "KB";
   }
-  return bytes.toString(); // Returns the value in Bytes
+
+  return { value: Number(value.toFixed(2)), unit };
 }
 
 export function formatEnergy(wh = 0) {
+  let unit = "kWh";
+  let value = wh;
   if (wh < 1) {
-    return (wh * 1000).toFixed(2); // Convert kWh to Wh and format if less than 1 kWh
+    value = wh * 1000; // Convert kWh to Wh
+    unit = "Wh";
   }
-  return wh.toFixed(2); // Returns value in kWh
+
+  return { value: Number(value.toFixed(2)), unit };
 }
 
 export function formatCO2(kg = 0) {
+  let unit = "kg";
+  let value = kg;
   if (kg < 1) {
-    return (kg * 1000).toFixed(2); // Convert kg to grams and format if less than 1 kg
+    value = kg * 1000; // Convert kg to grams
+    unit = "g";
   }
-  return kg.toFixed(2); // Returns value in kg
+
+  return { value: Number(value.toFixed(2)), unit };
 }
