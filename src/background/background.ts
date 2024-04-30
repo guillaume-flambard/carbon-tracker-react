@@ -1,51 +1,41 @@
-// background.ts
 interface StorageData {
   totalDataReceived: number;
   totalEnergyConsumed: number;
   totalCo2Emissions: number;
 }
 
-function bytesToMegabytes(bytes: number): number {
-  return bytes / 1000000; // converting bytes to MB
-}
+// Helper function to convert bytes to megabytes
+const bytesToMegabytes = (bytes: number): number => bytes / 1e6;
 
-function calculateEnergy(bytes: number): number {
-  // Assuming 0.2 kWh per GB, thus 0.0002 kWh per MB
-  return bytesToMegabytes(bytes) * 0.0002;
-}
+// Calculates the energy consumption in kWh from bytes
+const calculateEnergy = (bytes: number): number =>
+  bytesToMegabytes(bytes) * 0.0002;
 
-function calculateCO2(bytes: number): number {
-  // Assuming 0.1 kg CO2 per GB, thus 0.0001 kg per MB
-  return bytesToMegabytes(bytes) * 0.0001;
-}
+// Calculates the CO2 emissions in kg from bytes
+const calculateCO2 = (bytes: number): number =>
+  bytesToMegabytes(bytes) * 0.0001;
 
+// Listener for received headers to track data usage, energy, and emissions
 chrome.webRequest.onHeadersReceived.addListener(
-  function (details) {
-    const size = details.responseHeaders?.find(
+  ({ responseHeaders }) => {
+    const contentLengthHeader = responseHeaders?.find(
       (header) => header.name.toLowerCase() === "content-length"
-    )?.value;
-    const dataSize = parseInt(size || "0", 10);
+    );
+    const dataSize = parseInt(contentLengthHeader?.value || "0", 10);
 
     if (dataSize > 0) {
       chrome.storage.local.get(
         ["totalDataReceived", "totalEnergyConsumed", "totalCo2Emissions"],
-        (result: Partial<StorageData>) => {
-          const newTotalDataReceived =
-            (result.totalDataReceived || 0) + dataSize;
-          const newTotalEnergyConsumed =
-            (result.totalEnergyConsumed || 0) + calculateEnergy(dataSize);
-          const newTotalCo2Emissions =
-            (result.totalCo2Emissions || 0) + calculateCO2(dataSize);
+        (result) => {
+          const updatedData: StorageData = {
+            totalDataReceived: (result.totalDataReceived || 0) + dataSize,
+            totalEnergyConsumed:
+              (result.totalEnergyConsumed || 0) + calculateEnergy(dataSize),
+            totalCo2Emissions:
+              (result.totalCo2Emissions || 0) + calculateCO2(dataSize),
+          };
 
-          chrome.storage.local.set({
-            totalDataReceived: newTotalDataReceived,
-            totalEnergyConsumed: newTotalEnergyConsumed,
-            totalCo2Emissions: newTotalCo2Emissions,
-          });
-
-          console.log(
-            `Data received: ${newTotalDataReceived} bytes, Energy consumed: ${newTotalEnergyConsumed} kWh, CO2 emissions: ${newTotalCo2Emissions} kg`
-          );
+          chrome.storage.local.set(updatedData);
         }
       );
     }
