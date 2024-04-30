@@ -13,24 +13,16 @@ import {
 } from "./components/index";
 
 const Popup: React.FC = () => {
-  const [dataReceived, setDataReceived] = useState<number>(0);
-  const [energyConsumed, setEnergyConsumed] = useState<number>(0);
-  const [co2Emissions, setCo2Emissions] = useState<number>(0);
+  const [dataReceived, setDataReceived] = useState({ value: 0, unit: "Bytes" });
+  const [energyConsumed, setEnergyConsumed] = useState({
+    value: 0,
+    unit: "Wh",
+  });
+  const [co2Emissions, setCo2Emissions] = useState({ value: 0, unit: "g" });
   const [show, setShow] = useState<boolean>(false);
 
   const toggleShow = () => {
     setShow(!show);
-  };
-
-  const determineUnit = (value: number, type: "data" | "energy" | "co2") => {
-    if (type === "data") {
-      if (value >= 1000) return "GB";
-      if (value >= 1) return "MB";
-      if (value < 1 && value > 0) return "KB";
-      return "Bytes";
-    }
-    if (type === "energy") return value < 1 ? "Wh" : "kWh";
-    if (type === "co2") return value < 1 ? "g" : "kg";
   };
 
   useEffect(() => {
@@ -38,13 +30,9 @@ const Popup: React.FC = () => {
       chrome.storage.local.get(
         ["totalDataReceived", "totalEnergyConsumed", "totalCo2Emissions"],
         (result) => {
-          setDataReceived(
-            parseFloat(formatBytes(result.totalDataReceived || 0))
-          );
-          setEnergyConsumed(
-            parseFloat(formatEnergy(result.totalEnergyConsumed || 0))
-          );
-          setCo2Emissions(parseFloat(formatCO2(result.totalCo2Emissions || 0)));
+          setDataReceived(formatBytes(result.totalDataReceived || 0));
+          setEnergyConsumed(formatEnergy(result.totalEnergyConsumed || 0));
+          setCo2Emissions(formatCO2(result.totalCo2Emissions || 0));
         }
       );
     };
@@ -57,9 +45,9 @@ const Popup: React.FC = () => {
 
   const handleReset = () => {
     chrome.storage.local.clear();
-    setDataReceived(0);
-    setEnergyConsumed(0);
-    setCo2Emissions(0);
+    setDataReceived({ value: 0, unit: "Bytes" });
+    setEnergyConsumed({ value: 0, unit: "Wh" });
+    setCo2Emissions({ value: 0, unit: "g" });
   };
 
   return (
@@ -77,21 +65,21 @@ const Popup: React.FC = () => {
       <div className="my-8 flex justify-center items-center gap-4">
         <CounterCircle
           id="dataReceived"
-          value={dataReceived}
+          value={dataReceived.value}
           icon={<DownloadIcon />}
-          unit={determineUnit(dataReceived, "data")}
+          unit={dataReceived.unit}
         />
         <CounterCircle
           id="energyConsumed"
-          value={energyConsumed}
+          value={energyConsumed.value}
           icon={<ZapIcon />}
-          unit={determineUnit(energyConsumed, "energy")}
+          unit={energyConsumed.unit}
         />
         <CounterCircle
           id="co2Emissions"
-          value={co2Emissions}
+          value={co2Emissions.value}
           icon={<LeafyIcon />}
-          unit={determineUnit(co2Emissions, "co2")}
+          unit={co2Emissions.unit}
         />
       </div>
       <div className="flex items-center justify-between">
