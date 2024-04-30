@@ -42,3 +42,7 @@ export function formatCO2(kg = 0) {
 
   return { value: Number(value.toFixed(2)), unit };
 }
+
+export function formatDomain(url: string) {
+  return new URL(url).hostname.split(".").slice(-2).join(".");
+}
