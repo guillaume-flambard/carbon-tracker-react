@@ -1,7 +1,7 @@
 // Popup.tsx
 import { HelpCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { formatBytesToReadable, formatCO2, formatEnergy } from "../lib/utils";
+import { formatBytes, formatCO2, formatEnergy } from "../lib/utils";
 import {
   AccordionPopup,
   CounterCircle,
@@ -22,14 +22,29 @@ const Popup: React.FC = () => {
     setShow(!show);
   };
 
+  const determineUnit = (value: number, type: "data" | "energy" | "co2") => {
+    if (type === "data") {
+      if (value >= 1000) return "GB";
+      if (value >= 1) return "MB";
+      if (value < 1 && value > 0) return "KB";
+      return "Bytes";
+    }
+    if (type === "energy") return value < 1 ? "Wh" : "kWh";
+    if (type === "co2") return value < 1 ? "g" : "kg";
+  };
+
   useEffect(() => {
     const fetchData = () => {
       chrome.storage.local.get(
         ["totalDataReceived", "totalEnergyConsumed", "totalCo2Emissions"],
         (result) => {
-          setDataReceived(result.totalDataReceived || 0);
-          setEnergyConsumed(result.totalEnergyConsumed || 0);
-          setCo2Emissions(result.totalCo2Emissions || 0);
+          setDataReceived(
+            parseFloat(formatBytes(result.totalDataReceived || 0))
+          );
+          setEnergyConsumed(
+            parseFloat(formatEnergy(result.totalEnergyConsumed || 0))
+          );
+          setCo2Emissions(parseFloat(formatCO2(result.totalCo2Emissions || 0)));
         }
       );
     };
@@ -62,18 +77,21 @@ const Popup: React.FC = () => {
       <div className="my-8 flex justify-center items-center gap-4">
         <CounterCircle
           id="dataReceived"
-          value={formatBytesToReadable(dataReceived)}
+          value={dataReceived}
           icon={<DownloadIcon />}
+          unit={determineUnit(dataReceived, "data")}
         />
         <CounterCircle
           id="energyConsumed"
-          value={formatEnergy(energyConsumed)}
+          value={energyConsumed}
           icon={<ZapIcon />}
+          unit={determineUnit(energyConsumed, "energy")}
         />
         <CounterCircle
           id="co2Emissions"
-          value={formatCO2(co2Emissions)}
+          value={co2Emissions}
           icon={<LeafyIcon />}
+          unit={determineUnit(co2Emissions, "co2")}
         />
       </div>
       <div className="flex items-center justify-between">
