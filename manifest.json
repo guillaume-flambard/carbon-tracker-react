@@ -18,7 +18,8 @@
     "128": "logo.png"
   },
   "background": {
-    "service_worker": "./src/background/background.ts"
+    "service_worker": "./src/background/background.ts",
+    "persistent": true
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';",
