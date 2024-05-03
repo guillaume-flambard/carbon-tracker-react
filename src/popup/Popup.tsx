@@ -7,7 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../components/ui/carousel";
-import { formatBytes, formatCO2, formatEnergy } from "../lib/utils";
+import { cn, formatBytes, formatCO2, formatEnergy } from "../lib/utils";
 import {
   AccordionPopup,
   CounterCircle,
@@ -120,7 +120,12 @@ const Popup: React.FC = () => {
   };
 
   return (
-    <div className="px-4 py-6 bg-slate-200 rounded-3xl w-full relative">
+    <div
+      className={cn(
+        activeIndex === 0 ? "w-[400px]" : "w-[680px]",
+        "px-4 py-6 bg-slate-200 rounded-3xl relative m-1 transition-all duration-100 ease-out"
+      )}
+    >
       <div className="flex items-center justify-center gap-x-1">
         <h1 className="text-center text-3xl font-bold text-green-800">
           Carbon Tracker
@@ -168,6 +173,7 @@ const Popup: React.FC = () => {
                   onClick={() => setShow(!show)}
                 />
               </div>
+              {show && <AccordionPopup />}
             </CarouselItem>
           )}
           <CarouselItem>
@@ -185,7 +191,6 @@ const Popup: React.FC = () => {
           disabled={activeIndex === 1}
         />
       </Carousel>
-      {show && <AccordionPopup />}
     </div>
   );
 };
