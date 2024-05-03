@@ -86,7 +86,7 @@ const Popup: React.FC = () => {
   return (
     <div
       className={cn(
-        activeIndex === 0 ? "w-[400px]" : "w-[680px]",
+        activeIndex === 0 ? "w-[400px]" : "",
         "px-4 py-6 bg-slate-200 rounded-3xl relative m-1 transition-all duration-100 ease-out"
       )}
     >

@@ -38,9 +38,8 @@ export const columns: ColumnDef<ColumnProps>[] = [
     },
     cell: ({ row }) => {
       return (
-        <p className="cursor-pointer truncate max-w-20 hover:max-w-none transition-all ease-out duration-200 font-medium">
-          {row.original.url}
-        </p>
+        // <p className="cursor-pointer truncate max-w-20 hover:max-w-none transition-all ease-out duration-200 font-medium">
+        <p className="cursor-pointer font-medium">{row.original.url}</p>
       );
     },
   },
