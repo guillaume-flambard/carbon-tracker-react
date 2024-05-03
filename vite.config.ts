@@ -8,8 +8,7 @@ export default defineConfig({
   plugins: [react(), crx({ manifest }), tsconfigPaths()],
   resolve: {
     alias: {
-      "@": new URL("src", import.meta.url).pathname,
-      "/@/": new URL("src", import.meta.url).pathname + "/",
+      "@": new URL("/", import.meta.url).pathname,
     },
   },
   build: {

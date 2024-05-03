@@ -66,6 +66,7 @@ const Popup: React.FC = () => {
   });
   const [co2Emissions, setCo2Emissions] = useState({ value: 0, unit: "g" });
   const [show, setShow] = useState<boolean>(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -132,46 +133,57 @@ const Popup: React.FC = () => {
       <hr className="w-48 h-1 mx-auto my-6 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-700" />
       <Carousel>
         <CarouselContent>
+          {activeIndex === 0 && (
+            <CarouselItem>
+              <div className="my-8 flex justify-center items-center gap-4">
+                <CounterCircle
+                  id="dataReceived"
+                  value={dataReceived.value}
+                  icon={<DownloadIcon />}
+                  unit={dataReceived.unit}
+                />
+                <CounterCircle
+                  id="energyConsumed"
+                  value={energyConsumed.value}
+                  icon={<ZapIcon />}
+                  unit={energyConsumed.unit}
+                />
+                <CounterCircle
+                  id="co2Emissions"
+                  value={co2Emissions.value}
+                  icon={<LeafyIcon />}
+                  unit={co2Emissions.unit}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <button
+                  className="bg-green-800 hover:bg-green-700 transition-colors flex items-center justify-center rounded-lg text-white p-2 gap-x-1"
+                  onClick={handleReset}
+                >
+                  <span>Reset</span>{" "}
+                  <RefreshIcon className="w-[16px] h-[16px]" />
+                </button>
+                <HelpCircle
+                  className="w-[16px] h-[16px] cursor-pointer hover:scale-110 transition-all duration-300 ease-in-out"
+                  onClick={() => setShow(!show)}
+                />
+              </div>
+            </CarouselItem>
+          )}
           <CarouselItem>
-            <div className="my-8 flex justify-center items-center gap-4">
-              <CounterCircle
-                id="dataReceived"
-                value={dataReceived.value}
-                icon={<DownloadIcon />}
-                unit={dataReceived.unit}
-              />
-              <CounterCircle
-                id="energyConsumed"
-                value={energyConsumed.value}
-                icon={<ZapIcon />}
-                unit={energyConsumed.unit}
-              />
-              <CounterCircle
-                id="co2Emissions"
-                value={co2Emissions.value}
-                icon={<LeafyIcon />}
-                unit={co2Emissions.unit}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <button
-                className="bg-green-800 hover:bg-green-700 transition-colors flex items-center justify-center rounded-lg text-white p-2 gap-x-1"
-                onClick={handleReset}
-              >
-                <span>Reset</span> <RefreshIcon className="w-[16px] h-[16px]" />
-              </button>
-              <HelpCircle
-                className="w-[16px] h-[16px] cursor-pointer hover:scale-110 transition-all duration-300 ease-in-out"
-                onClick={() => setShow(!show)}
-              />
-            </div>
-          </CarouselItem>
-          <CarouselItem>
-            <DataTable columns={columns} data={data} />
+            {activeIndex === 1 && <DataTable columns={columns} data={data} />}
           </CarouselItem>
         </CarouselContent>
-        <CarouselPrevious className="!top-[-15%] !left-0" />
-        <CarouselNext className="!top-[-15%] !right-0" />
+        <CarouselPrevious
+          onClick={() => setActiveIndex((prev) => Math.max(prev - 1, 0))}
+          className="!top-[-15%] !left-0"
+          disabled={activeIndex === 0}
+        />
+        <CarouselNext
+          onClick={() => setActiveIndex((prev) => Math.min(prev + 1, 1))}
+          className="!top-[-15%] !right-0"
+          disabled={activeIndex === 1}
+        />
       </Carousel>
       {show && <AccordionPopup />}
     </div>
