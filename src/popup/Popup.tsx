@@ -1,4 +1,3 @@
-// Popup.tsx
 import { HelpCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import {
@@ -8,13 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../components/ui/carousel";
-
-import {
-  formatBytes,
-  formatCO2,
-  formatDomain,
-  formatEnergy,
-} from "../lib/utils";
+import { formatBytes, formatCO2, formatEnergy } from "../lib/utils";
 import {
   AccordionPopup,
   CounterCircle,
@@ -27,33 +20,41 @@ import {
 import { ColumnProps, columns } from "./components/table/Column";
 import { DataTable } from "./components/table/Data-table";
 
+interface DomainData {
+  totalDataReceived: number;
+  totalEnergyConsumed: number;
+  totalCo2Emissions: number;
+  rate: string;
+}
+
+interface StorageResult {
+  domains: { [key: string]: DomainData };
+}
+
 async function getData(): Promise<ColumnProps[]> {
-  return [
-    {
-      id: "1",
-      url: "https://www.google.com",
-      dataUsage: 100,
-      electricityUsage: 0.02,
-      carbonEmissions: 0.01,
-      rate: "A",
-    },
-    {
-      id: "2",
-      url: "https://www.facebook.com",
-      dataUsage: 200,
-      electricityUsage: 0.04,
-      carbonEmissions: 0.02,
-      rate: "B",
-    },
-    {
-      id: "3",
-      url: "https://www.twitter.com",
-      dataUsage: 300,
-      electricityUsage: 0.06,
-      carbonEmissions: 0.03,
-      rate: "C",
-    },
-  ];
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get("domains", (result) => {
+      if (chrome.runtime.lastError) {
+        console.error("Error fetching data:", chrome.runtime.lastError.message);
+        reject(new Error(chrome.runtime.lastError.message));
+        return;
+      }
+
+      const domainsData = (result.domains as StorageResult) || {};
+      const formattedData: ColumnProps[] = Object.entries(domainsData).map(
+        ([key, value]) => ({
+          id: key,
+          url: key,
+          dataUsage: formatBytes(value.totalDataReceived),
+          electricityUsage: formatEnergy(value.totalEnergyConsumed),
+          carbonEmissions: formatCO2(value.totalCo2Emissions),
+          rate: value.rate,
+        })
+      );
+
+      resolve(formattedData);
+    });
+  });
 }
 
 const Popup: React.FC = () => {
@@ -66,28 +67,48 @@ const Popup: React.FC = () => {
   const [co2Emissions, setCo2Emissions] = useState({ value: 0, unit: "g" });
   const [show, setShow] = useState<boolean>(false);
 
-  const toggleShow = () => {
-    setShow(!show);
-  };
-
   useEffect(() => {
-    const fetchData = () => {
-      getData().then((data) => setData(data));
+    const fetchData = async () => {
+      try {
+        const newData = await getData();
+        setData(newData);
 
-      chrome.storage.local.get(
-        ["totalDataReceived", "totalEnergyConsumed", "totalCo2Emissions"],
-        (result) => {
-          setDataReceived(formatBytes(result.totalDataReceived || 0));
-          setEnergyConsumed(formatEnergy(result.totalEnergyConsumed || 0));
-          setCo2Emissions(formatCO2(result.totalCo2Emissions || 0));
-        }
-      );
+        const totalValues = newData.reduce(
+          (acc, domain) => ({
+            totalDataReceived: acc.totalDataReceived + domain.dataUsage.value,
+            totalEnergyConsumed:
+              acc.totalEnergyConsumed + domain.electricityUsage.value,
+            totalCo2Emissions:
+              acc.totalCo2Emissions + domain.carbonEmissions.value,
+          }),
+          {
+            totalDataReceived: 0,
+            totalEnergyConsumed: 0,
+            totalCo2Emissions: 0,
+          }
+        );
+
+        setDataReceived(formatBytes(totalValues.totalDataReceived));
+        setEnergyConsumed(formatEnergy(totalValues.totalEnergyConsumed));
+        setCo2Emissions(formatCO2(totalValues.totalCo2Emissions));
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
     };
 
     fetchData();
-    chrome.storage.onChanged.addListener(fetchData);
+    const handleChange = (
+      changes: chrome.storage.StorageChange,
+      areaName: string
+    ) => {
+      if (areaName === "local" && changes?.newValue) {
+        fetchData();
+      }
+    };
 
-    return () => chrome.storage.onChanged.removeListener(fetchData);
+    chrome.storage.onChanged.addListener(handleChange);
+
+    return () => chrome.storage.onChanged.removeListener(handleChange);
   }, []);
 
   const handleReset = () => {
@@ -96,11 +117,6 @@ const Popup: React.FC = () => {
     setEnergyConsumed({ value: 0, unit: "Wh" });
     setCo2Emissions({ value: 0, unit: "g" });
   };
-
-  const dataWithFormattedDomain = data.map((item) => ({
-    ...item,
-    url: formatDomain(item.url),
-  }));
 
   return (
     <div className="px-4 py-6 bg-slate-200 rounded-3xl w-full relative">
@@ -113,7 +129,7 @@ const Popup: React.FC = () => {
       <p className="text-center text-xxs text-gray-600 dark:text-gray-300">
         Keep track of your carbon footprint
       </p>
-      <hr className="w-48 h-1 mx-auto my-6 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-700" />{" "}
+      <hr className="w-48 h-1 mx-auto my-6 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-700" />
       <Carousel>
         <CarouselContent>
           <CarouselItem>
@@ -146,12 +162,12 @@ const Popup: React.FC = () => {
               </button>
               <HelpCircle
                 className="w-[16px] h-[16px] cursor-pointer hover:scale-110 transition-all duration-300 ease-in-out"
-                onClick={toggleShow}
+                onClick={() => setShow(!show)}
               />
             </div>
           </CarouselItem>
           <CarouselItem>
-            <DataTable columns={columns} data={dataWithFormattedDomain} />
+            <DataTable columns={columns} data={data} />
           </CarouselItem>
         </CarouselContent>
         <CarouselPrevious className="!top-[-15%] !left-0" />

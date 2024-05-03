@@ -3,10 +3,19 @@ import { ColumnDef } from "@tanstack/react-table";
 export interface ColumnProps {
   id: string;
   url: string;
-  dataUsage: string | number;
-  electricityUsage: string | number;
-  carbonEmissions: string | number;
-  rate: "A" | "B" | "C";
+  dataUsage: {
+    value: number;
+    unit: string;
+  };
+  electricityUsage: {
+    value: number;
+    unit: string;
+  };
+  carbonEmissions: {
+    value: number;
+    unit: string;
+  };
+  rate: string;
 }
 
 export const columns: ColumnDef<ColumnProps>[] = [
@@ -15,15 +24,15 @@ export const columns: ColumnDef<ColumnProps>[] = [
     header: "Url",
   },
   {
-    accessorKey: "dataUsage",
+    accessorKey: "dataUsage.value",
     header: "Data",
   },
   {
-    accessorKey: "electricityUsage",
+    accessorKey: "electricityUsage.value",
     header: "Electricity",
   },
   {
-    accessorKey: "carbonEmissions",
+    accessorKey: "carbonEmissions.value",
     header: "Emissions",
   },
   {
