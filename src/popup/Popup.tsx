@@ -1,5 +1,6 @@
 import { HelpCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { getData } from "../api/get-data";
 import {
   Carousel,
   CarouselContent,
@@ -19,43 +20,6 @@ import {
 } from "./components/index";
 import { ColumnProps, columns } from "./components/table/Column";
 import { DataTable } from "./components/table/Data-table";
-
-interface DomainData {
-  totalDataReceived: number;
-  totalEnergyConsumed: number;
-  totalCo2Emissions: number;
-  rate: string;
-}
-
-interface StorageResult {
-  domains: { [key: string]: DomainData };
-}
-
-async function getData(): Promise<ColumnProps[]> {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get("domains", (result) => {
-      if (chrome.runtime.lastError) {
-        console.error("Error fetching data:", chrome.runtime.lastError.message);
-        reject(new Error(chrome.runtime.lastError.message));
-        return;
-      }
-
-      const domainsData = (result.domains as StorageResult) || {};
-      const formattedData: ColumnProps[] = Object.entries(domainsData).map(
-        ([key, value]) => ({
-          id: key,
-          url: key,
-          dataUsage: formatBytes(value.totalDataReceived),
-          electricityUsage: formatEnergy(value.totalEnergyConsumed),
-          carbonEmissions: formatCO2(value.totalCo2Emissions),
-          rate: value.rate,
-        })
-      );
-
-      resolve(formattedData);
-    });
-  });
-}
 
 const Popup: React.FC = () => {
   const [data, setData] = useState<ColumnProps[]>([]);
@@ -138,46 +102,44 @@ const Popup: React.FC = () => {
       <hr className="w-48 h-1 mx-auto my-6 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-700" />
       <Carousel>
         <CarouselContent>
-          {activeIndex === 0 && (
-            <CarouselItem>
-              <div className="my-8 flex justify-center items-center gap-4">
-                <CounterCircle
-                  id="dataReceived"
-                  value={dataReceived.value}
-                  icon={<DownloadIcon />}
-                  unit={dataReceived.unit}
-                />
-                <CounterCircle
-                  id="energyConsumed"
-                  value={energyConsumed.value}
-                  icon={<ZapIcon />}
-                  unit={energyConsumed.unit}
-                />
-                <CounterCircle
-                  id="co2Emissions"
-                  value={co2Emissions.value}
-                  icon={<LeafyIcon />}
-                  unit={co2Emissions.unit}
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <button
-                  className="bg-green-800 hover:bg-green-700 transition-colors flex items-center justify-center rounded-lg text-white p-2 gap-x-1"
-                  onClick={handleReset}
-                >
-                  <span>Reset</span>{" "}
-                  <RefreshIcon className="w-[16px] h-[16px]" />
-                </button>
-                <HelpCircle
-                  className="w-[16px] h-[16px] cursor-pointer hover:scale-110 transition-all duration-300 ease-in-out"
-                  onClick={() => setShow(!show)}
-                />
-              </div>
-              {show && <AccordionPopup />}
-            </CarouselItem>
-          )}
-          <CarouselItem>
-            {activeIndex === 1 && <DataTable columns={columns} data={data} />}
+          <CarouselItem className={cn(activeIndex === 0 ? "block" : "hidden")}>
+            <div className="my-8 flex justify-center items-center gap-4">
+              <CounterCircle
+                id="dataReceived"
+                value={dataReceived.value}
+                icon={<DownloadIcon />}
+                unit={dataReceived.unit}
+              />
+              <CounterCircle
+                id="energyConsumed"
+                value={energyConsumed.value}
+                icon={<ZapIcon />}
+                unit={energyConsumed.unit}
+              />
+              <CounterCircle
+                id="co2Emissions"
+                value={co2Emissions.value}
+                icon={<LeafyIcon />}
+                unit={co2Emissions.unit}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <button
+                className="bg-green-800 hover:bg-green-700 transition-colors flex items-center justify-center rounded-lg text-white p-2 gap-x-1"
+                onClick={handleReset}
+              >
+                <span>Reset</span> <RefreshIcon className="w-[16px] h-[16px]" />
+              </button>
+              <HelpCircle
+                className="w-[16px] h-[16px] cursor-pointer hover:scale-110 transition-all duration-300 ease-in-out"
+                onClick={() => setShow(!show)}
+              />
+            </div>
+            {show && <AccordionPopup />}
+          </CarouselItem>
+
+          <CarouselItem className={cn(activeIndex === 1 ? "block" : "hidden")}>
+            <DataTable columns={columns} data={data} />
           </CarouselItem>
         </CarouselContent>
         <CarouselPrevious

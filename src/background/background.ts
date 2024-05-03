@@ -40,7 +40,7 @@ chrome.webRequest.onHeadersReceived.addListener(
 
             const emissions = domainData.totalCo2Emissions;
             domainData.rate =
-              emissions > 0.5 ? "C" : emissions > 0.3 ? "B" : "A";
+              emissions > 0.5 ? "C" : emissions > 0.0003 ? "B" : "A";
 
             domains[domain] = domainData;
             chrome.storage.local.set({ domains });
