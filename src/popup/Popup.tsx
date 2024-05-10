@@ -18,7 +18,7 @@ import {
   RefreshIcon,
   ZapIcon,
 } from "./components/index";
-import { ColumnProps, columns } from "./components/table/Column";
+import { ColumnProps, useColumns } from "./components/table/Column";
 import { DataTable } from "./components/table/Data-table";
 
 const Popup: React.FC = () => {
@@ -31,6 +31,8 @@ const Popup: React.FC = () => {
   const [co2Emissions, setCo2Emissions] = useState({ value: 0, unit: "g" });
   const [show, setShow] = useState<boolean>(false);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const columns = useColumns();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,6 +64,7 @@ const Popup: React.FC = () => {
     };
 
     fetchData();
+
     const handleChange = (
       changes: chrome.storage.StorageChange,
       areaName: string
@@ -77,7 +80,11 @@ const Popup: React.FC = () => {
   }, []);
 
   const handleReset = () => {
+    // clear the table data
+    chrome.storage.local.set({ domains: {} });
     chrome.storage.local.clear();
+
+    setData([]);
     setDataReceived({ value: 0, unit: "Bytes" });
     setEnergyConsumed({ value: 0, unit: "Wh" });
     setCo2Emissions({ value: 0, unit: "g" });
@@ -86,7 +93,7 @@ const Popup: React.FC = () => {
   return (
     <div
       className={cn(
-        activeIndex === 0 ? "w-[400px]" : "w-[680px]",
+        activeIndex === 0 ? "w-[400px]" : "w-[600px]",
         "px-4 py-6 bg-slate-200 rounded-3xl relative m-1 transition-all duration-100 ease-out"
       )}
     >
@@ -139,7 +146,7 @@ const Popup: React.FC = () => {
           </CarouselItem>
 
           <CarouselItem className={cn(activeIndex === 1 ? "block" : "hidden")}>
-            <DataTable columns={columns} data={data} />
+            <DataTable key={data.length} columns={columns} data={data} />
           </CarouselItem>
         </CarouselContent>
         <CarouselPrevious

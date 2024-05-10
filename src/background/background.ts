@@ -26,7 +26,7 @@ chrome.webRequest.onHeadersReceived.addListener(
           console.log("Processing domain:", domain);
 
           chrome.storage.local.get({ domains: {} }, (result) => {
-            const domains = result.domains;
+            const domains = result.domains || {};
             const domainData = domains[domain] || {
               totalDataReceived: 0,
               totalEnergyConsumed: 0,
