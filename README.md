@@ -3,9 +3,9 @@
 `Carbon Tracker` is a Chrome extension that allows users to track their data consumption, electricity usage, and carbon footprint.
 
 ---
-<div style="display:flex;">
-   <img style:"border-radius:10px;" src="public/carbon-tracker-screen.png" alt="carbon-tracker" width="350" height="auto" >
-   <img style:"border-radius:10px;" src="public/carbon-tracker-screen2.png" alt="carbon-tracker" width="350" height="auto" >
+<div style="display:flex; justify-content:center; gap:20px;">
+   <img style="border-radius:10px; width:45%;" src="public/carbon-tracker-screen.png" alt="carbon-tracker" >
+   <img style="border-radius:10px; width:45%;" src="public/carbon-tracker-screen2.png" alt="carbon-tracker" >
 </div>
 
 ## 🤔 Why use Carbon Tracker
