@@ -4,8 +4,8 @@
 
 ---
 
-![carbon-screen](/public/carbon-tracker-screen.png)
-![carbon-screen2](/public/carbon-tracker-screen2.png)
+   <img src="public/carbon-tracker-screen.png" alt="carbon-tracker" width="350" height="350" >
+   <img src="public/carbon-tracker-screen2.png" alt="carbon-tracker" width="350" height="350" >
 
 ## 🤔 Why use Carbon Tracker
 
