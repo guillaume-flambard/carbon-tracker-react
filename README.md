@@ -4,8 +4,8 @@
 
 ---
 <div style="display:flex;">
-   <img src="public/carbon-tracker-screen.png" alt="carbon-tracker" width="350" height="350" >
-   <img src="public/carbon-tracker-screen2.png" alt="carbon-tracker" width="350" height="350" >
+   <img style:"border-radius:10px;" src="public/carbon-tracker-screen.png" alt="carbon-tracker" width="350" height="auto" >
+   <img style:"border-radius:10px;" src="public/carbon-tracker-screen2.png" alt="carbon-tracker" width="350" height="auto" >
 </div>
 
 ## 🤔 Why use Carbon Tracker
