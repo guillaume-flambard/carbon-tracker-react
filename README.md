@@ -11,9 +11,9 @@
 
 `Carbon Tracker` helps users monitor their environmental impact by tracking their internet usage and its associated carbon footprint. By understanding their data consumption and energy usage, users can make more informed decisions to reduce their carbon emissions.
 
- 🚀 Quick Start
+## 🚀 Quick Start
 
-## 🛠 Install dependencies
+### 🛠 Install dependencies
 
 ### 1.Use PNPM ( Recommend )
 
@@ -24,13 +24,13 @@ pnpm install
 ### 2.Build
 
 ```bash
-pnpm build
+pnpm run build
 ```
 
 ### 3.Watch with Nodemon
 
 ```(bash)
-nodemon watch
+npx nodemon
 ```
 
 ### 4.Upload the `dist` directory in the `chrome extension manager`
@@ -41,7 +41,7 @@ nodemon watch
 - [Manifest 3](https://developer.chrome.com/docs/extensions/develop/migrate?hl=fr) from Chrome API.
 - [CRXJS](https://crxjs.dev/vite-plugin)
 
-### ⚙️ Edit the `vite.config.ts` to buid organize the build structure as you prefer
+### ⚙️ Edit the `vite.config.ts` to change the dist structure or add entries and outputs to the extension
 
 ```ts
 import { crx } from "@crxjs/vite-plugin";
@@ -73,5 +73,5 @@ export default defineConfig({
 
 ### 🙃 Start playing
 
-- Code your view in popup `popup.tsx`
+- Write your view in `popup.tsx`
 - Build your logic using the [chrome API](https://developer.chrome.com/docs/extensions/reference/api?hl=fr) in `background.ts`
