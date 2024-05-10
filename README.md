@@ -6,7 +6,7 @@
 
 <div style="display:flex; justify-content:center; gap:20px;">
    <img style="border-radius:10px; width:auto; height:350px;" src="public/carbon-tracker-screen.png" alt="carbon-tracker" >
-   <img style="border-radius:10px; width:auto; height:350px;" src="public/carbon-tracker-screen3.png" alt="carbon-tracker" >
+   <img style="border-radius:10px; width:auto; height:350px;" src="public/carbon-tracker-screen2.png" alt="carbon-tracker" >
 </div>
 
 ## 🤔 Why use Carbon Tracker
