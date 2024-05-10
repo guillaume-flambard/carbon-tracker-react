@@ -26,7 +26,7 @@ const CounterCircle: React.FC<CounterCircleProps> = ({
   return (
     <div id={id} className="flex flex-col justify-center items-center gap-2">
       <div
-        className="data-field p-4 bg-white rounded-full min-w-[80px] min-h-[80px] shadow-md ring-1
+        className="data-field p-4 bg-white rounded-full w-[80px] h-[80px] shadow-md ring-1
        flex flex-col items-center justify-center relative"
       >
         <div className="absolute top-0 transform -translate-y-1/2">{icon}</div>
